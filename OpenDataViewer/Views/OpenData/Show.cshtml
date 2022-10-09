@@ -1,0 +1,56 @@
+﻿@model List<RegObjStat>
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<style>
+    table {
+        text-align: center;
+        border-collapse: separate; /* Don't collapse */
+        border-spacing: 0;
+    }
+
+    .header {
+        position: sticky;
+        top: 0;
+        background: white;
+    }
+</style>
+
+<h1>Valsts adrešu reģistrā reģistrētie objekti (2011-2022)</h1>
+
+
+@*<table class="table table-sm table-striped table-bordered">*@
+<table class="table table-sm">
+    <thead class="header">
+        <tr>
+            @foreach (var item in ViewBag.keys)
+            {
+                <th scope="col" width="1%">@item</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <th scope="row">@item.id</th>
+                <td>@item.Gads</td>
+                <td>@item.Menesis</td>
+                <td>@item.Pilsetas</td>
+                <td>@item.Novadi</td>
+                <td>@item.Pagasti</td>
+                <td>@item.Ciemi</td>
+                <td>@item.Mazciemi</td>
+                <td>@item.Ielas</td>
+                <td>@item.EkasUnZemesVienibas</td>
+                <td>@item.TelpuGrupas</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
