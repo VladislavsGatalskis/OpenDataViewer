@@ -7,19 +7,18 @@ namespace OpenDataViewer.Controllers
 {   
     public class OpenDataController : Controller
     {
-        public async Task<string> GetPreselectedDatasetAsString(string url, int? limitAmount = null)
+        public async Task<string?> GetJsonFromUri(string requestUri, int? limitAmount = null)
         {
-            string fullUrl;
-            if (limitAmount != null)
-            {
-                fullUrl = url + $"&limit={limitAmount}";
-            }
-            else fullUrl = url;
+            string uri;
+            if (limitAmount != null && !requestUri.Contains("&limit="))
+                uri = requestUri + $"&limit={limitAmount}";
+            else 
+                uri = requestUri;
 
             HttpClient client = new();
-            HttpResponseMessage response = await client.GetAsync(fullUrl);
+            HttpResponseMessage response = await client.GetAsync(uri);
             if (!response.IsSuccessStatusCode)  // Check if response from api is successful
-                return "unsuccessful";
+                return null;
 
             string json = await response.Content.ReadAsStringAsync();
 
@@ -33,8 +32,8 @@ namespace OpenDataViewer.Controllers
         public async Task<IActionResult> Show()
         {
             // Get JSON string from api and parse it into a Json Object
-            string url = "https://data.gov.lv/dati/lv/api/3/action/datastore_search?resource_id=58e7bbf1-c296-41c9-b45f-e2dd67fc9f1d";
-            string json = await GetPreselectedDatasetAsString(url);
+            string uri = "https://data.gov.lv/dati/lv/api/3/action/datastore_search?resource_id=58e7bbf1-c296-41c9-b45f-e2dd67fc9f1d";
+            string? json = await GetJsonFromUri(uri);
             if (json == null || json == "")     // Exception handling for json string being empty or null
                 return View();
 
@@ -50,9 +49,10 @@ namespace OpenDataViewer.Controllers
             // set 'limit' attribute in URI to total records in dataset.
             if (totalRecords > 100)
             {
-                string json2 = await GetPreselectedDatasetAsString(url, totalRecords);
+                string? json2 = await GetJsonFromUri(uri, totalRecords);
                 if (json2 == null || json2 == "")   // Exception handling for json string being empty or null
                     return View();
+
                 jObj = JObject.Parse(json2);    // Parse json into an object
 
                 recCount = totalRecords;
