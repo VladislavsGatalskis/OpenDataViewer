@@ -7,6 +7,7 @@ namespace OpenDataViewer.Controllers
 {   
     public class OpenDataController : Controller
     {
+        //test
         public async Task<string?> GetJsonFromUri(string requestUri, int? limitAmount = null)
         {
             string uri;
