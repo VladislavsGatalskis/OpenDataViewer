@@ -17,6 +17,7 @@ namespace OpenDataViewer.Controllers
             else 
                 uri = requestUri;
 
+            // Get JSON string from api and parse it into a Json Object
             HttpClient client = new();
             HttpResponseMessage response = await client.GetAsync(uri);
             if (!response.IsSuccessStatusCode)  // Check if response from api is successful
@@ -36,49 +37,48 @@ namespace OpenDataViewer.Controllers
         }
         public async Task<IActionResult> Show()
         {
-            // Get JSON string from api and parse it into a Json Object
             string uri = "https://data.gov.lv/dati/lv/api/3/action/datastore_search?resource_id=58e7bbf1-c296-41c9-b45f-e2dd67fc9f1d";
-            JObject? jObj = await CreateJsonObjectFromUri(uri);
-            if (jObj == null)     // Exception handling for json string being empty or null
-                return View();
 
-            int totalRecords = (int)jObj["result"]!["total"]!;      // Count of all the records in the selected dataset
-            int? recCount = jObj["result"]!["records"]!.Count();    // Count of records that are returned by api call
-            if(recCount == 0 || recCount == null)   // Exception handling for 0 records retrieved
-                return View();
-
-            // NOTE: data.gov.lv API returns only 100 records in pre-selected dataset.
-            // If there are more then 100 records in the pre-selected dataset,
-            // set 'limit' attribute in URI to total records in dataset.
-            if (totalRecords > 100)
+            try
             {
-                jObj = await CreateJsonObjectFromUri(uri, totalRecords);
-                if (jObj == null)     // Exception handling for json string being empty or null
-                    return View();
+                JObject? jObj = await CreateJsonObjectFromUri(uri);     // Creating a JObject from uri.
+                int totalRecords = (int)jObj["result"]!["total"]!;      // Count of all the records in the selected dataset.
+                int recCount = jObj["result"]!["records"]!.Count();    // Count of records that are returned by api call.
 
-                recCount = totalRecords;
+                // NOTE: data.gov.lv API returns only 100 records in pre-selected dataset.
+                // If there are more then 100 records in the pre-selected dataset,
+                // set 'limit' attribute in URI to total records in dataset.
+                if (totalRecords > 100)
+                {
+                    jObj = await CreateJsonObjectFromUri(uri, totalRecords);
+                    recCount = totalRecords;
+                }
+
+                // Iterate through each datarow, deserialize it into
+                // 'RegObjStat' class object and add to list.
+                var records = jObj["result"]!["records"]!;
+                List<RegObjStat> datasetRecords = new();
+                for (int i = 0; i < recCount; i++)
+                {
+                    string recordAsJson = records[i]!.ToString();
+                    RegObjStat regObjStat = JsonSerializer.Deserialize<RegObjStat>(recordAsJson)!;
+                    datasetRecords.Add(regObjStat);
+                }
+
+                // Save column names in a List.
+                var fields = jObj["result"]!["fields"]!;
+                List<string> columnNames = new();
+                foreach (var field in fields)
+                    columnNames.Add(field["id"]!.ToString());
+                ViewBag.ColumnNames = columnNames;    // Pass column names to view for creating table header.
+
+                // Pass a list of 'RegObjStat' type objects to view.
+                return View(datasetRecords);
             }
-
-            // Iterate through each datarow, deserialize it into
-            // 'RegObjStat' class object and add to list.
-            var records = jObj["result"]!["records"]!;
-            List<RegObjStat> datasetRecords = new();
-            for (int i = 0; i < recCount; i++)
+            catch (Exception)
             {
-                string recordAsJson = records[i]!.ToString();
-                RegObjStat regObjStat = JsonSerializer.Deserialize<RegObjStat>(recordAsJson)!;
-                datasetRecords.Add(regObjStat);
+                return View();
             }
-
-            // Save column names in a List
-            var fields = jObj["result"]!["fields"]!;
-            List<string> columnNames = new();
-            foreach (var field in fields)
-                columnNames.Add(field["id"]!.ToString());
-            ViewBag.ColumnNames = columnNames;    // Pass column names to view for creating table header
-
-            // Pass a list of 'RegObjStat' type objects to view
-            return View(datasetRecords);
         }
     }
 }

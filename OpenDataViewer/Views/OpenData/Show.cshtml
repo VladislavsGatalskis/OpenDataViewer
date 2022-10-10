@@ -21,7 +21,7 @@
 
 <h1>Valsts adrešu reģistrā reģistrētie objekti (2011-2022)</h1>
 
-@if (Model == null) 
+@if (Model == null || Model.Count == 0)
 {
     <div>
         <p>No data found!</p>
