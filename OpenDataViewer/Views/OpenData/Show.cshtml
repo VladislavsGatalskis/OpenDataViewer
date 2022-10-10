@@ -21,33 +21,41 @@
 
 <h1>Valsts adrešu reģistrā reģistrētie objekti (2011-2022)</h1>
 
-<div class="table-wrap">
-    <table class="table table-sm">
-        <thead class="header">
-            <tr>
-                @foreach (var item in ViewBag.keys)
-                {
-                    <th scope="col" width="1%">@item</th>
-                }
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
+@if (Model == null) 
+{
+    <div>
+        <p>No data found!</p>
+    </div>
+} 
+else {
+    <div class="table-wrap">
+        <table class="table table-sm">
+            <thead class="header">
                 <tr>
-                    <th scope="row">@item.id</th>
-                    <td>@item.Gads</td>
-                    <td>@item.Menesis</td>
-                    <td>@item.Pilsetas</td>
-                    <td>@item.Novadi</td>
-                    <td>@item.Pagasti</td>
-                    <td>@item.Ciemi</td>
-                    <td>@item.Mazciemi</td>
-                    <td>@item.Ielas</td>
-                    <td>@item.EkasUnZemesVienibas</td>
-                    <td>@item.TelpuGrupas</td>
+                    @foreach (var columnName in ViewBag.ColumnNames)
+                    {
+                        <th scope="col" width="1%">@columnName</th>
+                    }
                 </tr>
-            }
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <th scope="row">@item.id</th>
+                        <td>@item.Gads</td>
+                        <td>@item.Menesis</td>
+                        <td>@item.Pilsetas</td>
+                        <td>@item.Novadi</td>
+                        <td>@item.Pagasti</td>
+                        <td>@item.Ciemi</td>
+                        <td>@item.Mazciemi</td>
+                        <td>@item.Ielas</td>
+                        <td>@item.EkasUnZemesVienibas</td>
+                        <td>@item.TelpuGrupas</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
