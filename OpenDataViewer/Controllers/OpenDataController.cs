@@ -7,10 +7,11 @@ namespace OpenDataViewer.Controllers
 {   
     public class OpenDataController : Controller
     {
-        //test
-        public async Task<string?> GetJsonFromUri(string requestUri, int? limitAmount = null)
+        public async Task<JObject?> CreateJsonObjectFromUri(string requestUri, int? limitAmount = null)
         {
             string uri;
+            JObject jObj;
+
             if (limitAmount != null && !requestUri.Contains("&limit="))
                 uri = requestUri + $"&limit={limitAmount}";
             else 
@@ -22,8 +23,11 @@ namespace OpenDataViewer.Controllers
                 return null;
 
             string json = await response.Content.ReadAsStringAsync();
+            if (json == null || json == "")     // Exception handling for json string being empty or null
+                return null;
 
-            return json;
+            jObj = JObject.Parse(json);
+            return jObj;
         }
 
         public IActionResult Index()
@@ -34,11 +38,9 @@ namespace OpenDataViewer.Controllers
         {
             // Get JSON string from api and parse it into a Json Object
             string uri = "https://data.gov.lv/dati/lv/api/3/action/datastore_search?resource_id=58e7bbf1-c296-41c9-b45f-e2dd67fc9f1d";
-            string? json = await GetJsonFromUri(uri);
-            if (json == null || json == "")     // Exception handling for json string being empty or null
+            JObject? jObj = await CreateJsonObjectFromUri(uri);
+            if (jObj == null)     // Exception handling for json string being empty or null
                 return View();
-
-            JObject jObj = JObject.Parse(json); // Parse json into an object
 
             int totalRecords = (int)jObj["result"]!["total"]!;      // Count of all the records in the selected dataset
             int? recCount = jObj["result"]!["records"]!.Count();    // Count of records that are returned by api call
@@ -50,11 +52,9 @@ namespace OpenDataViewer.Controllers
             // set 'limit' attribute in URI to total records in dataset.
             if (totalRecords > 100)
             {
-                string? json2 = await GetJsonFromUri(uri, totalRecords);
-                if (json2 == null || json2 == "")   // Exception handling for json string being empty or null
+                jObj = await CreateJsonObjectFromUri(uri, totalRecords);
+                if (jObj == null)     // Exception handling for json string being empty or null
                     return View();
-
-                jObj = JObject.Parse(json2);    // Parse json into an object
 
                 recCount = totalRecords;
             }
