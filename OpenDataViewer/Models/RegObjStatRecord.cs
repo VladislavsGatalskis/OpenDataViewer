@@ -2,7 +2,8 @@
 
 namespace OpenDataViewer.Models
 {
-    public class RegObjStat
+    // Registered Object Statistics Record
+    public class RegObjStatRecord
     {
         [JsonPropertyName("_id")]
         public int? id { get; set; }

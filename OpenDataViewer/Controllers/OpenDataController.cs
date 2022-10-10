@@ -54,11 +54,11 @@ namespace OpenDataViewer.Controllers
                 // Iterating through each dataset record, deserializing it into
                 // a 'RegObjStat' class object and adding it to a list.
                 var records = jObj["result"]!["records"]!;
-                List<RegObjStat> datasetRecords = new();
+                List<RegObjStatRecord> datasetRecords = new();
                 for (int i = 0; i < recCount; i++)
                 {
                     string recordAsJson = records[i]!.ToString();
-                    RegObjStat regObjStat = JsonSerializer.Deserialize<RegObjStat>(recordAsJson)!;
+                    RegObjStatRecord regObjStat = JsonSerializer.Deserialize<RegObjStatRecord>(recordAsJson)!;
                     datasetRecords.Add(regObjStat);
                 }
 
