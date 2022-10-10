@@ -33,6 +33,7 @@ namespace OpenDataViewer.Controllers
 
         public async Task<IActionResult> Show()
         {
+            // Hardcoded open data resource URI.
             string uri = "https://data.gov.lv/dati/lv/api/3/action/datastore_search?resource_id=58e7bbf1-c296-41c9-b45f-e2dd67fc9f1d";
 
             try
