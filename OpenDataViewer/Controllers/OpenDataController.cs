@@ -15,7 +15,7 @@ namespace OpenDataViewer.Controllers
         {
             // Get JSON string from api and parse it into a Json Object
             string url = "https://data.gov.lv/dati/lv/api/3/action/datastore_search?resource_id=58e7bbf1-c296-41c9-b45f-e2dd67fc9f1d";
-            HttpClient client = new HttpClient();
+            HttpClient client = new();
             string json = client.GetStringAsync(url).Result;
             JObject jObj = JObject.Parse(json);
 
@@ -37,7 +37,7 @@ namespace OpenDataViewer.Controllers
             // Iterate through each datarow, deserialize it into
             // VARregObj class object and add to list.
             var records = jObj["result"]!["records"]!;
-            List<RegObjStat> dataRows = new List<RegObjStat>();
+            List<RegObjStat> dataRows = new();
             for (int i = 0; i < recCount; i++)
             {
                 string jsonString = records[i]!.ToString();
@@ -47,7 +47,7 @@ namespace OpenDataViewer.Controllers
 
             // Save keys (column names) in a List
             var fields = jObj["result"]!["fields"]!;
-            List<string> keys = new List<string>()!;
+            List<string> keys = new();
             foreach (var key in fields)
                 keys.Add(key["id"]!.ToString());
             ViewBag.Keys = keys;
