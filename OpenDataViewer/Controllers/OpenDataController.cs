@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using OpenDataViewer.Models;
+using System.Dynamic;
 using System.Text.Json;
 
 namespace OpenDataViewer.Controllers
@@ -52,21 +53,6 @@ namespace OpenDataViewer.Controllers
                     recCount = totalRecords;
                 }
 
-                // CREATE A DYNAMIC OBJECT
-                
-                
-                
-                // Iterating through each dataset record, deserializing it into
-                // a 'RegObjStat' class object and adding it to a list.
-                var records = jObj["result"]!["records"]!;
-                List<RegObjStatRecord> datasetRecords = new();
-                for (int i = 0; i < recCount; i++)
-                {
-                    string recordAsJson = records[i]!.ToString();
-                    RegObjStatRecord regObjStat = JsonSerializer.Deserialize<RegObjStatRecord>(recordAsJson)!;
-                    datasetRecords.Add(regObjStat);
-                }
-
                 // Saving column names in a list.
                 var fields = jObj["result"]!["fields"]!;
                 List<string> columnNames = new();
@@ -74,7 +60,25 @@ namespace OpenDataViewer.Controllers
                     columnNames.Add(field["id"]!.ToString());
                 ViewBag.ColumnNames = columnNames;    // Passing column names to view for creating table header.
 
-                // Passing a list of 'RegObjStat' type objects to view.
+
+                // Iterating through each dataset record, deserializing it into
+                // a 'RegObjStat' class object and adding it to a list.
+                var records = jObj["result"]!["records"]!;
+                List<IDictionary<string, Object>> datasetRecords = new();
+                //List<ExpandoObject> datasetRecords = new();
+                for (int i = 0; i < recCount; i++)
+                {
+                    // CREATE A DYNAMIC OBJECT
+                    var expando = new ExpandoObject() as IDictionary<string, Object>;
+
+                    foreach (var columnName in columnNames)
+                    {
+                        expando.Add(columnName, records[i][columnName].ToString());
+                    }
+
+                    datasetRecords.Add(expando);
+                }
+
                 return View(datasetRecords);
             }
             catch (Exception)

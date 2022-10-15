@@ -1,4 +1,4 @@
-﻿@model List<RegObjStatRecord>
+﻿@model List<System.Collections.Generic.IDictionary<System.String, System.Object>>
 
 <style>
     table {
@@ -21,41 +21,13 @@
 
 <h1>Valsts adrešu reģistrā reģistrētie objekti (2011-2022)</h1>
 
-@if (Model == null || Model.Count == 0)
-{
-    <div>
-        <p>Something went wrong. No data found!</p>
-    </div>
-} 
-else {
-    <div class="table-wrap">
-        <table class="table table-sm">
-            <thead class="header">
-                <tr>
-                    @foreach (var columnName in ViewBag.ColumnNames)
-                    {
-                        <th scope="col" width="1%">@columnName</th>
-                    }
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <th scope="row">@item.id</th>
-                        <td>@item.Gads</td>
-                        <td>@item.Menesis</td>
-                        <td>@item.Pilsetas</td>
-                        <td>@item.Novadi</td>
-                        <td>@item.Pagasti</td>
-                        <td>@item.Ciemi</td>
-                        <td>@item.Mazciemi</td>
-                        <td>@item.Ielas</td>
-                        <td>@item.EkasUnZemesVienibas</td>
-                        <td>@item.TelpuGrupas</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-}
+<div>
+    @foreach (var expando in Model)
+    {
+        foreach(var item in  expando) 
+        {
+            <div>@item.Value</div>
+        }
+        <br />
+    }
+</div>
