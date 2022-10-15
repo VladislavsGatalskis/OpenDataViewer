@@ -52,6 +52,10 @@ namespace OpenDataViewer.Controllers
                     recCount = totalRecords;
                 }
 
+                // CREATE A DYNAMIC OBJECT
+                
+                
+                
                 // Iterating through each dataset record, deserializing it into
                 // a 'RegObjStat' class object and adding it to a list.
                 var records = jObj["result"]!["records"]!;
