@@ -74,7 +74,7 @@ namespace OpenDataViewer.Controllers
 
                     foreach (var columnName in columnNames)
                     {
-                        expando.Add(columnName, records[i][columnName].ToString());
+                        expando.Add(columnName, records[i]![columnName]!.ToString());
                     }
 
                     datasetRecords.Add(expando);
