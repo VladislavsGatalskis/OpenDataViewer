@@ -62,11 +62,8 @@ namespace OpenDataViewer.Controllers
                 ViewBag.ColumnNames = columnNames;    // Passing column names to view for creating table header.
 
 
-                // Iterating through each dataset record, deserializing it into
-                // a 'RegObjStat' class object and adding it to a list.
                 var records = jObj["result"]!["records"]!;
                 List<IDictionary<string, Object>> datasetRecords = new();
-                //List<ExpandoObject> datasetRecords = new();
                 for (int i = 0; i < recCount; i++)
                 {
                     // CREATE A DYNAMIC OBJECT
