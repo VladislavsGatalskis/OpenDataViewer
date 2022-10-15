@@ -21,13 +21,35 @@
 
 <h1>Valsts adrešu reģistrā reģistrētie objekti (2011-2022)</h1>
 
-<div>
-    @foreach (var expando in Model)
-    {
-        foreach(var item in  expando) 
-        {
-            <div>@item.Value</div>
-        }
-        <br />
-    }
-</div>
+@if (Model == null || Model.Count == 0)
+{
+    <div>
+        <p>Something went wrong. No data found!</p>
+    </div>
+}
+else
+{
+    <div class="table-wrap">
+        <table class="table table-sm">
+            <thead class="header">
+                <tr>
+                    @foreach (var columnName in ViewBag.ColumnNames)
+                    {
+                        <th scope="col" width="1%">@columnName</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var expando in Model)
+                {
+                    <tr>
+                        @foreach (var item in expando)
+                        {
+                            <td>@item.Value</td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

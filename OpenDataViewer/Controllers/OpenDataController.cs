@@ -36,6 +36,7 @@ namespace OpenDataViewer.Controllers
         {
             // Hardcoded open data resource URI.
             string uri = "https://data.gov.lv/dati/lv/api/3/action/datastore_search?resource_id=58e7bbf1-c296-41c9-b45f-e2dd67fc9f1d";
+            //string uri = "https://data.gov.lv/dati/lv/api/3/action/datastore_search?resource_id=cd36c896-a941-40c8-8c6f-73e1482d10b9";
 
             try
             {
